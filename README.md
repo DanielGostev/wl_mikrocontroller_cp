@@ -1,2 +1,2 @@
-# WaveLabs-Heating-System
-Mikrocontroller Code
+# Mikrocontroller Code
+
