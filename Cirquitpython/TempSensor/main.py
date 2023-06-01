@@ -12,20 +12,11 @@ import adafruit_max31865
 import json
 
 
-# Add a secrets.py to your filesystem that has a dictionary called secrets with "ssid" and
-# "password" keys with your WiFi credentials. DO NOT share that file or commit it into Git or other
-# source control.
-# pylint: disable=no-name-in-module,wrong-import-order
 try:
     from secrets import secrets
 except ImportError:
     print("WiFi secrets are kept in secrets.py, please add them there!")
     raise
-# Set your Adafruit IO Username and Key in secrets.py
-# (visit io.adafruit.com if you need to create an account,
-# or if you need your Adafruit IO key.)
-#aio_username = secrets["aio_username"]
-#aio_key = secrets["aio_key"]
 
 print("Connecting to %s" % secrets["ssid"])
 wifi.radio.connect(secrets["ssid"], secrets["password"])
@@ -39,13 +30,10 @@ mqtt_topic = "temp/pico"
 led = digitalio.DigitalInOut(board.LED)
 led.direction = digitalio.Direction.OUTPUT
 
-# Adafruit IO-style Topic
-# Use this topic if you'd like to connect to io.adafruit.com
-# mqtt_topic = secrets["aio_username"] + '/feeds/temperature'
+
 
 ### Code ###
-# Define callback methods which are called when events occur
-# pylint: disable=unused-argument, redefined-outer-name
+
 def connect(mqtt_client, userdata, flags, rc):
     # This function will be called when the mqtt_client is connected
     # successfully to the broker.
@@ -86,8 +74,6 @@ pool = socketpool.SocketPool(wifi.radio)
 mqtt_client = MQTT.MQTT(
     broker=secrets["broker"],
     port=secrets["port"],   
-    #username=secrets["aio_username"],
-    #password=secrets["aio_key"],
     socket_pool=pool,
     ssl_context=ssl.create_default_context(),
 )
@@ -103,18 +89,6 @@ mqtt_client.on_message = message
 # Connect the client to the MQTT broker.
 print("Attempting to connect to %s" % mqtt_client.broker)
 mqtt_client.connect()
-
-#print("Subscribing to %s" % mqtt_topic)
-#mqtt_client.subscribe(mqtt_topic)
-
-#print("Publishing to %s" % mqtt_topic)
-#mqtt_client.publish(mqtt_topic, "Hello Broker!")
-
-#print("Unsubscribing from %s" % mqtt_topic)
-#mqtt_client.unsubscribe(mqtt_topic)
-
-#print("Disconnecting from %s" % mqtt_client.broker)
-#mqtt_client.disconnect()
 
 # temperature Sensor
 spi = busio.SPI(clock=board.GP2, MOSI=board.GP3, MISO=board.GP0)
